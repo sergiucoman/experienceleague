@@ -1,0 +1,17 @@
+version: 1
+
+indices:
+  english: &default
+    include:
+      - /docs/experience-manager-cloud-manager/content
+
+    target: /query-index.xlsx
+    properties:
+      author:
+        select: head > meta[name="author"]
+        value: |
+          attribute(el, 'content')
+      title:
+        select: main h1:first-of-type
+        value: |
+          textContent(el)
