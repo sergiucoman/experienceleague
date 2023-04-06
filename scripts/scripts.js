@@ -58,6 +58,41 @@ export function decorateMain(main) {
   decorateBlocks(main);
 }
 
+
+/**
+ * Returns the language dependent root path
+ * @returns {string} The computed root path
+ */
+export function getRootPath() {
+  return ``;
+}
+
+/**
+ * fetches article index.
+ * @returns {object} index with data and path lookup
+ */
+export async function fetchBlogArticleIndex() {
+  const pageSize = 500;
+  window.articleIndex = window.articleIndex || {
+    data: [],
+    byPath: {},
+    offset: 0,
+    complete: false,
+  };
+  if (window.articleIndex.complete) return (window.articleIndex);
+  const index = window.articleIndex;
+  const resp = await fetch(`${getRootPath()}/query-index.json??sheet=documents&limit=${pageSize}&offset=${index.offset}`);
+  const json = await resp.json();
+  const complete = (json.limit + json.offset) === json.total;
+  json.data.forEach((post) => {
+    index.data.push(post);
+    index.byPath[post.path.split('.')[0]] = post;
+  });
+  index.complete = complete;
+  index.offset = json.offset + pageSize;
+  return (index);
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -69,6 +104,7 @@ async function loadEager(doc) {
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
+    window.myFn = fetchBlogArticleIndex;
     await waitForLCP(LCP_BLOCKS);
   }
 }
