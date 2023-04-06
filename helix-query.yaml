@@ -5,6 +5,7 @@ indices:
     include:
       - /docs/experience-manager-cloud-manager/content/overview/*
       - /docs/experience-manager-cloud-manager/content/*/*
+      - /docs/experience-manager-cloud-manager/content/*/*/*
     target: /query-index.xlsx
     properties:
       author:
